@@ -1,9 +1,10 @@
 import csv
-import datetime
-import pytz
 import requests
 import urllib
 import uuid
+from dotenv import load_dotenv
+import json
+import os
 
 from flask import redirect, render_template, session
 from functools import wraps
@@ -55,29 +56,30 @@ def lookup(symbol):
 
     # Prepare API request
     symbol = symbol.upper()
-    end = datetime.datetime.now(pytz.timezone("US/Eastern"))
-    start = end - datetime.timedelta(days=7)
 
-    # Yahoo Finance API
-    url = (
-        f"https://query1.finance.yahoo.com/v7/finance/download/{urllib.parse.quote_plus(symbol)}"
-        f"?period1={int(start.timestamp())}"
-        f"&period2={int(end.timestamp())}"
-        f"&interval=1d&events=history&includeAdjustedClose=true"
-    )
+    # # Load environment variables from the .env file
+    # load_dotenv()
+
+    # # Retrieve the API key
+    # api_key = os.getenv('API_KEY')
+
+    # # Yahoo Finance API
+    # url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={urllib.parse.quote_plus(symbol)}&apikey={urllib.parse.quote_plus(api_key)}'
 
     # Query API
     try:
-        response = requests.get(
-            url,
-            cookies={"session": str(uuid.uuid4())},
-            headers={"Accept": "*/*", "User-Agent": "python-requests"},
-        )
-        response.raise_for_status()
+        # response = requests.get(
+        #     url,
+        #     cookies={"session": str(uuid.uuid4())},
+        #     headers={"Accept": "*/*", "User-Agent": "python-requests"},
+        # )
+        # response.raise_for_status()
 
-        # CSV header: Date,Open,High,Low,Close,Adj Close,Volume
-        quotes = list(csv.DictReader(response.content.decode("utf-8").splitlines()))
-        price = round(float(quotes[-1]["Adj Close"]), 2)
+        # data = response.json()
+        # price = round(float(data['Global Quote']['05. price']), 2)
+        with open('stocks.json', 'r') as file:
+            data = json.load(file)
+        price = next(stock['price'] for stock in data['stocks'] if stock['symbol'] == symbol)
         return {"price": price, "symbol": symbol}
     except (KeyError, IndexError, requests.RequestException, ValueError):
         return None

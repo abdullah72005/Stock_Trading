@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Homepage
+{% endblock %}
+
+{% block main %}
+<div class="money">Balance: {{ balance }}</div>
+<div class="money">Grand total: {{ grandTotal }}</div>
+<br>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Symbol</th>
+            <th>Shares</th>
+            <th>Current price</th>
+            <th>Total value</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for stock in wallet %}
+
+        <tr>
+            <td>{{ stock.symbol }}</td>
+            <td>{{ stock.shares }}</td>
+            <td>{{ stock.stock_price }}</td>
+            <td>{{ stock.total }}</td>
+        </tr>
+
+        {% endfor %}
+
+
+    </tbody>
+</table>
+{% endblock %}

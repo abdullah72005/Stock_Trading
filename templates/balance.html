@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Balance
+{% endblock %}
+
+{% block main %}
+    <div class="money">Balance: {{ balance }}</div>
+    <form action="/balance" method="post">
+        <h5 class="title">Enter cash amount</h5>
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="cash" placeholder="Amount in usd" type="number" min="1">
+        </div>
+        <h5 class="title">Credit card</h5>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" autocomplete="off" name="credit" placeholder="Card number" type="number" min="1">
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+{% endblock %}

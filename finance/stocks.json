@@ -1,0 +1,17 @@
+{
+    "stocks": [
+      { "symbol": "AAPL", "price": 225.05 },
+      { "symbol": "NFLX", "price": 350.09 },
+      { "symbol": "GOOG", "price": 2800.18 },
+      { "symbol": "AMZN", "price": 135.42 },
+      { "symbol": "MSFT", "price": 330.25 },
+      { "symbol": "TSLA", "price": 240.33 },
+      { "symbol": "META", "price": 310.44 },
+      { "symbol": "NVDA", "price": 470.98 },
+      { "symbol": "BABA", "price": 85.32 },
+      { "symbol": "ORCL", "price": 100.78 },
+      { "symbol": "INTC", "price": 34.22 },
+      { "symbol": "AMD", "price": 110.15 }
+    ]
+  }
+  

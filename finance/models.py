@@ -18,7 +18,7 @@ class Owned(models.Model):
     Username    = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="owned_stocks")
 
     def __str__(self):
-         return f"{self.username.username} owns {self.shares} shares of {self.symbol}"
+         return f"{self.Username} owns {self.shares} shares of {self.symbol}"
     
 
 class Transaction(models.Model):
@@ -31,5 +31,5 @@ class Transaction(models.Model):
     Username    = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="user_transactions")
 
     def __str__(self):
-         return f"{self.purchase_type.capitalize()} {self.shares} shares of {self.symbol} by {self.username.username}"
+         return f"{self.purchase_type.capitalize()} {self.shares} shares of {self.symbol} by {self.Username}"
     

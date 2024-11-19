@@ -47,26 +47,35 @@ def logout_view(request):
     # Redirect user to login form
     return redirect("login/")
 
-
+#this take from the quoteForm in forms.py
+#read the else statment before the if
 @login_required
 def quote_view(request):
     if request.method == "POST":
+        #takes the form after it's been filled
         form = quoteForm(request.POST)
+        #checks wether the form is vaild and then takes the input and puts inside stock_name
         if form.is_valid():
             form.clean
             stock_name = form.cleaned_data['stock_name']
+        #calls the api and returns the price and name if found
         result = lookup(stock_name)
+        #if not found send the user a letter
         if not result:
             return render('<h1>stock not found</h1>')
         context = {
             'result' : result
         }
+        # if found it renders the new page which tells the price
         return render(request, "quoted.html", context)
     else:
+        #create a new form
         form = quoteForm()
+        #put the form as an object
         context = {
             'form' : form
         }
+        #sends the form to the page
         return render(request, "quote.html", context)
 
 

@@ -36,7 +36,7 @@ def lookup(symbol):
 
         # data = response.json()
         # price = round(float(data['Global Quote']['05. price']), 2)
-        with open('stocks.json', 'r', encoding='utf-8') as file:
+        with open('stocks.json', 'r',) as file:
             data = json.load(file)
         price = next(stock['price'] for stock in data['stocks'] if stock['symbol'] == symbol)
         return {"price": price, "symbol": symbol}

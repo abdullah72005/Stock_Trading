@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
+
 from .models import Client, Owned, Transaction
 from finance.helpers import lookup, usd
+from .forms import quoteForm
 
 # Create your views here.
 @login_required
@@ -11,7 +13,7 @@ def index_view(request):
     
     # render with balance and owned stocks
     # return render(request, "index.html", {})
-    return HttpResponse('<h1>Hello World home</h1>')
+    return render('<h1>Hello World home</h1>')
 
 
 
@@ -47,9 +49,25 @@ def logout_view(request):
 
 
 @login_required
-def quote_view():
-
-    return HttpResponse('<h1>Hello World qutote/h1>')
+def quote_view(request):
+    if request.method == "POST":
+        form = quoteForm(request.POST)
+        if form.is_valid():
+            form.clean
+            stock_name = form.cleaned_data['stock_name']
+        result = lookup(stock_name)
+        if not result:
+            return render('<h1>stock not found</h1>')
+        context = {
+            'result' : result
+        }
+        return render(request, "quoted.html", context)
+    else:
+        form = quoteForm()
+        context = {
+            'form' : form
+        }
+        return render(request, "quote.html", context)
 
 
 

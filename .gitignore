@@ -14,7 +14,7 @@ db.sqlite3
 
 # If you are using Django migrations
 *.pyc
-*/migrations/
+
 
 # If you're using environments:
 .env

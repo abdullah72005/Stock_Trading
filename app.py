@@ -337,3 +337,46 @@ def balance():
     # if method is get render html page
     else:
         return render_template("balance.html", balance=usd(userBalance))
+
+@app.route("/password", methods=["GET", "POST"])
+@login_required
+def password():
+    if request.method == "POST":
+
+        username = request.form.get("username")
+
+        rows = db.execute("SELECT * FROM users WHERE username = ?", username)
+
+        if len(rows) < 1:
+            return ("input a vaild username")
+        
+        if username != (db.execute("SELECT username FROM users WHERE id = ?", session['user_id'])[0]['username']):
+            return render_template("error.html",error = "username doesn't match")
+        
+        old_password = request.form.get("old_password")
+
+        if  rows[0]["password"]  != old_password:
+            return render_template("error.html",error ="password doesn't match")
+        
+        new_password = request.form.get("new_password")
+
+        if not new_password:
+            return render_template("error.html",error ="empty new password")
+        
+        confirm = request.form.get("confirm")
+
+        if not confirm:
+            return render_template("error.html",error ="empty confirm")
+        
+        if new_password != confirm:
+            return render_template("error.html",error ="new password doesn't match confirmation")
+        
+        if new_password == old_password:
+            return render_template("error.html",error ="new password can't be the same as the old one")
+
+        db.execute("UPDATE users SET password = (?) WHERE username = (?)", new_password, username)
+
+        return redirect("/")
+    
+    else:
+        return render_template("password.html")

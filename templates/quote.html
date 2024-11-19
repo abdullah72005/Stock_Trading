@@ -3,7 +3,7 @@
 {% block title %}
     Quote
 {% endblock %}
-
+<!--this is basically the same -->
 {% block main %}
     <form action="/quote/" method="post">{% csrf_token %}
         {{form.as_div}}

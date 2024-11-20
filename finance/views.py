@@ -77,8 +77,8 @@ def register_view(request):
 @login_required
 def sell_view(request):
     """Sell shares of stock"""
-    username = request.user.username
-    user = Client.objects.get(username = username)
+    userid = request.user.id
+    user = Client.objects.get(id = userid)
     balance = user.cash
     stocks = Owned.objects.filter(Username = user.id)
     if request.method == "POST":
@@ -106,8 +106,6 @@ def sell_view(request):
         Transaction.objects.create(purchase_type = 'sell',price_when_bought = lookupResult["price"], shares = shares, symbol = lookupResult["symbol"], Username = user)
         return render(request, "index.html", {})
 
-
-        
     else:
 
         context = {
@@ -122,5 +120,39 @@ def sell_view(request):
 def balance_view():
 
     return HttpResponse('<h1>Hello World balance</h1>')
+
+
+
+@login_required
+def password_view(request):
+    if request.method == "POST":
+        userid = request.user.id
+        og_user = Client.objects.get(id = userid)
+        username = request.POST.get('username')
+        old_password = request.POST.get('old_password')
+        print(old_password)
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm')
+        if not username:
+            return HttpResponse('<h1>usernaeme not correct</h1>')
+        if not old_password:
+            return HttpResponse('<h1>old password cannot be empty</h1>')
+        if not new_password:
+            return HttpResponse('<h1>new password cannot be empty</h1>')
+        if not confirm_password:
+            return HttpResponse('<h1>new password does not match confirmation</h1>')
+        if og_user.get_username() != username:
+            return HttpResponse('<h1>usernaeme not correct</h1>')
+        if not og_user.check_password(old_password):
+            return HttpResponse('<h1>password not correct</h1>')
+        if new_password != confirm_password:
+            return HttpResponse('<h1>new password does not match confirmation</h1>')
+        if new_password == old_password:
+            return HttpResponse("<h1>new password can't be the same as the old one</h1>")
+        og_user.set_password(new_password)
+        og_user.save()
+        return render(request, "index.html", {})
+        
+    return render(request, "password.html", {})
 
 

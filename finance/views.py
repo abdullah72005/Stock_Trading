@@ -98,12 +98,24 @@ def buy_view(request):
 
 
 
-@login_required
-def history_view():
+
+# WHEN LOGIN IS IMPLEMENTED THE NEXT 2 LINES SHOULD BE UNCOMMENTED AND THE THIRD SHOULD BE DELETED
+######################################@login_required
+def history_view(request):
     """Show history of transactions"""
 
+    ############################################################# userid = session["user_id"]
+    userid = request.user.id # delete this
+
+
+    # get client(custom user) object inorder to use as foreign key in transactions
+    c = Client.objects.get(id = userid)
+
+    # get all user transactions
+    transactions = Transaction.objects.filter(Username=c)
+
     # pass data to template and render history html page
-    return HttpResponse('<h1>Hello World history</h1>')
+    return render(request, "history.html", {"transactions":transactions})
 
 
 

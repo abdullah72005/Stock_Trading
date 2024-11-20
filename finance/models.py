@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 class Client(AbstractUser):
-    cash        = models.DecimalField(blank=False, null=False, default=10000.00, max_digits=20, decimal_places=2)
+    cash        = models.DecimalField(blank=False, null=False, default=10000.00, max_digits=13, decimal_places=2)
 
     def __str__(self):
         return self.username

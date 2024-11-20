@@ -25,7 +25,7 @@ def buy_view(request):
     
     # get user id
     ################################################### userid = request.sessions.get("user_id")
-    userid = request.user.id
+    userid = request.user.id # delete this
 
     # get client(custom user) object inorder to access balance and other data
     c = Client.objects.get(id = userid)
@@ -169,9 +169,47 @@ def sell_view():
 
 
 
-@login_required
-def balance_view():
+# WHEN LOGIN IS IMPLEMENTED THE NEXT 2 LINES SHOULD BE UNCOMMENTED AND THE THIRD SHOULD BE DELETED
+######################################@login_required
+def balance_view(request):
 
-    return HttpResponse('<h1>Hello World balance</h1>')
+
+    ############################################################# userid = session["user_id"]
+    userid = request.user.id # delete this
+
+    # get client(custom user) object inorder to access balance and other data
+    c = Client.objects.get(id = userid)
+
+    # get users balance
+    userBalance = c.cash
+
+
+    # if method is post
+    if request.method == "POST":
+        # get desired cash amount
+        cash = request.POST.get("cash")
+
+        # check input
+        if not cash:
+            return HttpResponse("please enter cash amount")
+        if int(cash) < 0:
+            return HttpResponse("invalid input")
+
+        # check if user balance is out of bound
+        userBalance = float(userBalance)
+        userBalance += float(cash)
+        if userBalance > 1000000000000:
+            return HttpResponse("it is forbidden to be that rich")
+        
+        # update users cash amount
+        c.cash = userBalance
+        c.save()
+
+        # redirect to index
+        return redirect("/")
+
+    # if method is get render html page
+    else:
+        return render(request, "balance.html",{ "balance":usd(userBalance) })
 
 

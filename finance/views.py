@@ -1,11 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
 
 from .models import Client, Owned, Transaction
 from finance.helpers import lookup, usd
-from .forms import quoteForm
 
 # Create your views here.
 @login_required
@@ -53,11 +52,7 @@ def logout_view(request):
 def quote_view(request):
     if request.method == "POST":
         #takes the form after it's been filled
-        form = quoteForm(request.POST)
-        #checks wether the form is vaild and then takes the input and puts inside stock_name
-        if form.is_valid():
-            form.clean
-            stock_name = form.cleaned_data['stock_name']
+        stock_name = request.POST.get('symbol')
         #calls the api and returns the price and name if found
         result = lookup(stock_name)
         #if not found send the user a letter
@@ -69,14 +64,7 @@ def quote_view(request):
         # if found it renders the new page which tells the price
         return render(request, "quoted.html", context)
     else:
-        #create a new form
-        form = quoteForm()
-        #put the form as an object
-        context = {
-            'form' : form
-        }
-        #sends the form to the page
-        return render(request, "quote.html", context)
+        return render(request, "quote.html", {})
 
 
 
@@ -87,10 +75,46 @@ def register_view(request):
 
 
 @login_required
-def sell_view():
+def sell_view(request):
     """Sell shares of stock"""
+    username = request.user.username
+    user = Client.objects.get(username = username)
+    balance = user.cash
+    stocks = Owned.objects.filter(Username = user.id)
+    if request.method == "POST":
+        symbol = request.POST.get('symbol')
+        if not symbol:
+            return HttpResponse('<h1>select a symbol</h1>')
+        try:
+            # Use get_object_or_404 to efficiently find the stock by symbol
+            stock = get_object_or_404(stocks, symbol=symbol) 
+        except:  # Handle the case where the stock is not found
+            return False
+        stock = Owned.objects.get(symbol = symbol,Username = user.id)
+        shares = request.POST.get('shares')
+        if int(shares) > int(stock.shares):
+            return HttpResponse('<h1>not enough shares/h1>')
+        lookupResult = lookup(symbol)
+        new_cash = float(user.cash) + ((lookupResult["price"]) * float(shares))
+        user.cash = new_cash
+        user.save()
+        stock.shares -= int(shares)
+        if stock.shares == 0:
+            stock.delete()
+        else:
+            stock.save()
+        Transaction.objects.create(purchase_type = 'sell',price_when_bought = lookupResult["price"], shares = shares, symbol = lookupResult["symbol"], Username = user)
+        return render(request, "index.html", {})
 
-    return HttpResponse('<h1>Hello World sell</h1>')
+
+        
+    else:
+
+        context = {
+            'stocks' : stocks,
+            'balance' : balance,
+        }
+        return render(request, "sell.html", context)
 
 
 

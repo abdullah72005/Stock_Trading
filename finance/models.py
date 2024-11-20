@@ -24,7 +24,6 @@ class Owned(models.Model):
 class Transaction(models.Model):
     purchase_type = models.CharField(max_length=5, blank=False, null=False)
     price_when_bought = models.DecimalField(blank=False, null=False, max_digits=20, decimal_places=2)
-    current_price = models.DecimalField(max_digits=20, decimal_places=2, null=True)
     shares      = models.IntegerField(blank=False, null=False)
     symbol      = models.CharField(max_length=5, blank=False, null=False)
     time        = models.DateTimeField(auto_now_add = True, blank=False, null=False)

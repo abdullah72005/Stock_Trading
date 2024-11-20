@@ -6,7 +6,7 @@
 
 {% block main %}
     <div class="money">Balance: {{ balance }}</div>
-    <form action="/buy" method="post">
+    <form action="/buy/" method="post"> {% csrf_token %}
         <div class="mb-3">
             <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="symbol" placeholder="Symbol" type="text">
         </div>

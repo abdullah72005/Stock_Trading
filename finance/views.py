@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
 
 
 from .models import Client, Owned, Transaction
@@ -13,14 +14,88 @@ def index_view(request):
     
     # render with balance and owned stocks
     # return render(request, "index.html", {})
-    return render('<h1>Hello World home</h1>')
+    return HttpResponse('<h1>Hello World home</h1>')
 
 
 
-@login_required
-def buy_view():
+# WHEN LOGIN IS IMPLEMENTED THE NEXT 2 LINES SHOULD BE UNCOMMENTED AND THE THIRD SHOULD BE DELETED
+####################################################### @login_required
+def buy_view(request):
+    """Buy shares of stock"""
+    
+    # get user id
+    ################################################### userid = request.sessions.get("user_id")
+    userid = request.user.id
 
-    return HttpResponse('<h1>Hello World buy</h1>')
+    # get client(custom user) object inorder to access balance and other data
+    c = Client.objects.get(id = userid)
+
+    # get users balance
+    balance = c.cash
+
+    # if method is POST
+    if request.method == "POST":
+        # get data from the form
+        symbol = request.POST.get("symbol").upper()
+        shares = request.POST.get("shares")
+        ptype = "Buy"
+
+        # get the stock price from the api
+        lookupResult = lookup(symbol)
+
+        # check input
+        if not symbol:
+            return HttpResponse("Please enter stock symbol")
+        if not shares:
+            return HttpResponse("please enter shares amount")
+        if not shares.isnumeric():
+            return HttpResponse("please enter whole number")
+        if float(shares) <= 0:
+            return HttpResponse("Invalid input")
+        if not lookupResult:
+            return HttpResponse("Invalid stock symbol")
+        
+        # see cost and check if user can afford it
+        purchasePrice = float(lookupResult["price"]) * float(shares)
+        stockPrice = lookupResult["price"]
+        if purchasePrice > balance:
+            return HttpResponse("You don't have enough balance")
+        
+        # add purchase to db
+        trans = Transaction(purchase_type=ptype, price_when_bought=stockPrice, shares=shares, symbol=symbol, Username=c)
+        trans.save()
+
+        # update users balance
+        c.cash = float(balance) - purchasePrice
+        c.save()
+
+        # update users wallet
+        try:
+            owned_record = Owned.objects.get(symbol=symbol, Username_id=userid)
+            owned_id = owned_record.id  # Get the ID of the stock in the wallet
+        except ObjectDoesNotExist:
+            owned_id = None  # it is his first time purchasing this stock
+
+
+        # if it is his first time purchasing this stock insert it to the db
+        if not owned_id:
+            newStock = Owned(symbol=symbol, shares=shares, stock_price=stockPrice, total=purchasePrice, Username=c)
+            newStock.save()
+
+        # if its not his first time then update his wallet
+        else:
+            oldShares = Owned.objects.get(symbol=symbol, Username_id=userid).shares
+            newShares = int(oldShares) + int(shares)
+            owned_record.shares = newShares
+            owned_record.total = stockPrice * newShares
+            owned_record.save()
+
+        # redirect to main page
+        return redirect("/")
+    else:
+        # render buy template
+        return render(request, "buy.html", { "balance":usd(balance) })
+
 
 
 @login_required

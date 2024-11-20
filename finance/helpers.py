@@ -40,7 +40,7 @@ def lookup(symbol):
             data = json.load(file)
         price = next(stock['price'] for stock in data['stocks'] if stock['symbol'] == symbol)
         return {"price": price, "symbol": symbol}
-    except (KeyError, IndexError, requests.RequestException, ValueError):
+    except:
         return None
 
 

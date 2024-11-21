@@ -82,11 +82,7 @@ Before you begin, make sure you have Python3 installed. Then,
    ```sh
    python3 manage.py migrate
    ```
-3. Apply database migrations
-   ```sh
-   python3 manage.py migrate
-   ```
-4. To start the application, execute:
+3. To start the application, execute:
    ```sh
    python3 manage.py runserver
    ```

@@ -1,30 +1,67 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.contrib.auth.hashers import make_password, check_password 
+from django.contrib.auth import authenticate, login
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.template.backends.jinja2 import Jinja2
+from django.template import engines
 
 from .models import Client, Owned, Transaction
-from finance.helpers import lookup, usd
+from finance.helpers import lookup, usd, validatePassword, showErrorMessage
 
 # Create your views here.
-@login_required
+@login_required  # This decorator ensures the user must be logged in to access this view
 def index_view(request):
+    # Retrieve the user information for the currently logged-in user
+    # The 'request.user.username' refers to the username of the logged-in user.
+    username = Client.objects.get(username=request.user.username)
     
-    # render with balance and owned stocks
-    # return render(request, "index.html", {})
-    return HttpResponse('<h1>Hello World home</h1>')
+    # Retrieve the amount of cash the user has (stored in the 'cash' field)
+    cash = request.user.cash
+    
+    # Retrieve all stocks that the user owns by using the related 'owned_stocks' field from the Client model
+    stocks = username.owned_stocks.all()
+
+    # Initialize a variable to keep track of the total value of the user's stocks
+    stockSum = 0
+
+    # Loop through each stock owned by the user to calculate its total value
+    for stock in stocks:
+        # Retrieve the latest stock information from the API
+        stockInfo = lookup(stock.symbol)
+        
+        # Calculate the total value of the stock (shares * current stock price)
+        total = float(stockInfo['price']) * float(stock.shares)
+        
+        # Update the stock's stored price and total value in the database
+        stock.stock_price = stockInfo['price']
+        stock.total = total
+        
+        # Save the updated stock information in the database
+        stock.save()
+
+        # Add the stock's total value to the total portfolio value (stockSum)
+        stockSum += total
+
+    # Calculate the grand total value of the user's portfolio (stocks + cash)
+    grandTotal = stockSum + float(cash)
+
+    # Render the 'index.html' template, passing the user's wallet (stocks) and the calculated balances
+    return render(request, "index.html", {
+        'wallet': stocks,  # List of the user's owned stocks with updated prices and totals
+        'balance': usd(cash),  # The user's available cash, formatted as USD
+        'grandTotal': usd(grandTotal),  # The total value of the user's portfolio, formatted as USD
+    })
 
 
 
-# WHEN LOGIN IS IMPLEMENTED THE NEXT 2 LINES SHOULD BE UNCOMMENTED AND THE THIRD SHOULD BE DELETED
-####################################################### @login_required
+@login_required
 def buy_view(request):
     """Buy shares of stock"""
     
     # get user id
-    ################################################### userid = request.sessions.get("user_id")
-    userid = request.user.id # delete this
+    userid = request.user.id 
 
     # get client(custom user) object inorder to access balance and other data
     c = Client.objects.get(id = userid)
@@ -44,21 +81,21 @@ def buy_view(request):
 
         # check input
         if not symbol:
-            return HttpResponse("Please enter stock symbol")
+            return showErrorMessage(request, "buy.html", "Please enter stock symbol")
         if not shares:
-            return HttpResponse("please enter shares amount")
+            return showErrorMessage(request, "buy.html", "please enter shares amount")
         if not shares.isnumeric():
-            return HttpResponse("please enter whole number")
+            return showErrorMessage(request, "buy.html", "please enter whole number")
         if float(shares) <= 0:
-            return HttpResponse("Invalid input")
+            return showErrorMessage(request, "buy.html", "Invalid input")
         if not lookupResult:
-            return HttpResponse("Invalid stock symbol")
+            return showErrorMessage(request, "buy.html", "Invalid stock symbol")
         
         # see cost and check if user can afford it
         purchasePrice = float(lookupResult["price"]) * float(shares)
         stockPrice = lookupResult["price"]
         if purchasePrice > balance:
-            return HttpResponse("You don't have enough balance")
+            return showErrorMessage(request, "buy.html", "You don't have enough balance")
         
         # add purchase to db
         trans = Transaction(purchase_type=ptype, price_when_bought=stockPrice, shares=shares, symbol=symbol, Username=c)
@@ -98,13 +135,12 @@ def buy_view(request):
 
 
 
-# WHEN LOGIN IS IMPLEMENTED THE NEXT 2 LINES SHOULD BE UNCOMMENTED AND THE THIRD SHOULD BE DELETED
-######################################@login_required
+@login_required
 def history_view(request):
     """Show history of transactions"""
 
-    ############################################################# userid = session["user_id"]
-    userid = request.user.id # delete this
+    # get user id
+    userid = request.user.id 
 
 
     # get client(custom user) object inorder to use as foreign key in transactions
@@ -119,9 +155,55 @@ def history_view(request):
 
 
 def login_view(request):
-    """Log user in"""
 
-    return HttpResponse('<h1>Hello World login</h1>')
+    # Check if the request is a POST request (i.e., the user has submitted the login form).
+    if request.method == "POST":
+        # Get the username and password entered by the user from the form.
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        # Check if the username was provided by the user. If not, show an error message.
+        if not username:
+            return showErrorMessage(request, "login.html", "Please Enter a username")
+
+        # Check if the password was provided by the user. If not, show an error message.
+        elif not password:
+            return showErrorMessage(request, "login.html", "Please Enter a password")
+
+        # Try to find a user (client) with the provided username in the database.
+        # If the username doesn't exist, an exception is raised.
+        try:
+            client = Client.objects.get(username=username)
+        except Client.DoesNotExist:
+            # If the username does not exist, show an error message.
+            return showErrorMessage(request, "login.html", "Invalid Username.")
+
+        # If the username exists, check if the password entered by the user matches the stored password.
+        # The check_password function compares the plaintext password with the hashed password stored in the database.
+        if check_password(password, client.password):
+            # If the password matches, authenticate the user.
+            # The authenticate function checks the username and password against the database.
+            user = authenticate(request, username=client.username, password=password)
+
+            # If the authentication is successful, 'user' will be a valid user object.
+            if user is not None:
+                # Log the user in by storing their session information.
+                login(request, user)
+
+                # After logging in, redirect the user to the home page (or another page).
+                return redirect("/")
+
+            else:
+                # If authentication failed, show an error message.
+                return showErrorMessage(request, "login.html", "Authentication failed.")
+        else:
+            # If the password is incorrect, show an error message.
+            return showErrorMessage(request, "login.html", "Invalid password.")
+    
+    # If the request is not a POST request (i.e., the user is just visiting the page), render the login form.
+    else:
+        return render(request, "login.html")
+
 
 
 def logout_view(request):
@@ -131,9 +213,8 @@ def logout_view(request):
     request.session.flush()
 
     # Redirect user to login form
-    return redirect("login/")
+    return redirect("/login")
 
-#this take from the quoteForm in forms.py
 #read the else statment before the if
 @login_required
 def quote_view(request):
@@ -144,7 +225,7 @@ def quote_view(request):
         result = lookup(stock_name)
         #if not found send the user a letter
         if not result:
-            return render('<h1>stock not found</h1>')
+            return showErrorMessage(request, "quote.html", 'stock not found')
         context = {
             'result' : result
         }
@@ -157,13 +238,55 @@ def quote_view(request):
 
 def register_view(request):
 
-    return HttpResponse('<h1>Hello World register</h1>')
+    # Check if the request is a POST request (i.e., a form submission).
+    if request.method == "POST":
+        # Get the values entered by the user for username, password, and password confirmation from the form.
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        confirmPassword = request.POST.get("confirmation")
 
+        # Check if the username already exists in the database by querying the 'Client' table.
+        usernameDuplicate = Client.objects.filter(username=username)
 
+        # If the username is empty, show an error message and return to the register page.
+        if not username:
+            return showErrorMessage(request, "register.html", "Please fill in a username")
 
+        # If the username is already taken, show an error message and return to the register page.
+        if usernameDuplicate:
+            return showErrorMessage(request, "register.html", "Username already taken")
+
+        # If the password is empty, show an error message and return to the register page.
+        if not password:
+            return showErrorMessage(request, "register.html", "Please fill in a password")
+
+        # Validate the password for strength (this function checks for things like length, special characters, etc.).
+        errorMessage = validatePassword(password)
+        
+        # If the password doesn't meet the validation criteria, show an error message and return to the register page.
+        if errorMessage:
+            return showErrorMessage(request, "register.html", errorMessage)
+
+        # Check if the password and the confirmation password match.
+        if password != confirmPassword:
+            return showErrorMessage(request, "register.html", "Please make sure the confirmation password matches the original password")
+
+        # If all checks pass, create a new 'Client' object and save the user to the database.
+        # The password is hashed using 'make_password' to store it securely.
+        client = Client(username=username, password=make_password(password))
+        client.save()  # Save the new user to the database.
+
+        # Redirect the user to the login page after successful registration.
+        return redirect("/login")
+
+    # If the request is not a POST request (i.e., the user is just visiting the page), render the registration form.
+    else:
+        return render(request, "register.html")
+        
 @login_required
 def sell_view(request):
     """Sell shares of stock"""
+
     #gets user id
     userid = request.user.id
     #gets current user from id
@@ -177,19 +300,19 @@ def sell_view(request):
         symbol = request.POST.get('symbol')
         #checks if the user inputs a symbol
         if not symbol:
-            return HttpResponse('<h1>select a symbol</h1>')
+            return showErrorMessage(request, "sell.html", 'select a symbol')
             #checks if the user owns this symbol
         try:
             stock = get_object_or_404(stocks, symbol=symbol) 
         except: # Handle the case where the stock is not found
-            return HttpResponse('<h1>select a symbol you OWN</h1>')
+            return showErrorMessage(request, "sell.html", 'select a symbol you OWN')
         #gets the owned object where it's choesn by the name of the stock and the id of the user
         stock = Owned.objects.get(symbol = symbol,Username = user.id)
         #gets the shares from the form
         shares = request.POST.get('shares')
         #checks if he own enough shares
         if int(shares) > int(stock.shares):
-            return HttpResponse('<h1>not enough shares/h1>')
+            return showErrorMessage(request, "sell.html", 'not enough shares')
         #uses the lookup function to return the current price of the symbol
         lookupResult = lookup(symbol)
         #calculate the user's new cash
@@ -206,7 +329,7 @@ def sell_view(request):
             stock.save()
         #create a new transaction and redircts to index
         Transaction.objects.create(purchase_type = 'sell',price_when_bought = lookupResult["price"], shares = shares, symbol = lookupResult["symbol"], Username = user)
-        return render(request, "index.html", {})
+        return redirect("/")
 
     else:
         #sends the stocks and the balance into the form at sell.html
@@ -218,13 +341,11 @@ def sell_view(request):
 
 
 
-# WHEN LOGIN IS IMPLEMENTED THE NEXT 2 LINES SHOULD BE UNCOMMENTED AND THE THIRD SHOULD BE DELETED
-######################################@login_required
+@login_required
 def balance_view(request):
 
-
-    ############################################################# userid = session["user_id"]
-    userid = request.user.id # delete this
+    # get user id
+    userid = request.user.id 
 
     # get client(custom user) object inorder to access balance and other data
     c = Client.objects.get(id = userid)
@@ -240,15 +361,15 @@ def balance_view(request):
 
         # check input
         if not cash:
-            return HttpResponse("please enter cash amount")
+            return showErrorMessage(request, "balance.html", "please enter cash amount")
         if int(cash) < 0:
-            return HttpResponse("invalid input")
+            return showErrorMessage(request, "balance.html", "invalid input")
 
         # check if user balance is out of bound
         userBalance = float(userBalance)
         userBalance += float(cash)
         if userBalance > 1000000000000:
-            return HttpResponse("it is forbidden to be that rich")
+            return showErrorMessage(request, "balance.html", "it is forbidden to be that rich")
         
         # update users cash amount
         c.cash = userBalance
@@ -265,6 +386,7 @@ def balance_view(request):
 
 @login_required
 def password_view(request):
+
     #this function takes 4 inputs
     if request.method == "POST":
         #get user id
@@ -279,26 +401,26 @@ def password_view(request):
         confirm_password = request.POST.get('confirm')
         #checks for the existing of the inputs
         if not username:
-            return HttpResponse('<h1>usernaeme not correct</h1>')
+            return showErrorMessage(request, "password.html", 'username not correct')
         if not old_password:
-            return HttpResponse('<h1>old password cannot be empty</h1>')
+            return showErrorMessage(request, "password.html", 'old password cannot be empty')
         if not new_password:
-            return HttpResponse('<h1>new password cannot be empty</h1>')
+            return showErrorMessage(request, "password.html", 'new password cannot be empty')
         if not confirm_password:
-            return HttpResponse('<h1>new password does not match confirmation</h1>')
+            return showErrorMessage(request, "password.html", 'new password does not equal confirmation')
         #compares the old data with the new one
         if og_user.get_username() != username:
-            return HttpResponse('<h1>usernaeme not correct</h1>')
+            return showErrorMessage(request, "password.html", 'usernaeme not correct')
         if not og_user.check_password(old_password):
-            return HttpResponse('<h1>password not correct</h1>')
+            return showErrorMessage(request, "password.html", 'password not correct')
         if new_password != confirm_password:
-            return HttpResponse('<h1>new password does not match confirmation</h1>')
+            return showErrorMessage(request, "password.html", 'new password does not match confirmation')
         if new_password == old_password:
-            return HttpResponse("<h1>new password can't be the same as the old one</h1>")
+            return showErrorMessage(request, "password.html", "new password can't be the same as the old one")
         #gets the new password and saves it then redirct to index page
         og_user.set_password(new_password)
         og_user.save()
-        return render(request, "index.html", {})
+        return redirect("/")
     #the form with 4 inputs
     return render(request, "password.html", {})
 

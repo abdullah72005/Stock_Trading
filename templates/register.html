@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block main %}
-    <form action="/register" method="post">
+    <form action="/register/" method="post"> {% csrf_token %}
         <input class="form-control mx-auto w-auto" name="username" type="text" placeholder="Username" autocomplete="off" autofocus>
         <br>
         <input class="form-control mx-auto w-auto" name="password" type="password" placeholder="Password" autocomplete="off" >
@@ -14,4 +14,9 @@
         <br>
         <button class="btn btn-primary" type="submit">Register</button>
     </form>
+    {% if errorMessage %}
+        <div class="errorMessage">
+            {{ errorMessage }}
+        </div>
+    {% endif %}
 {% endblock %}

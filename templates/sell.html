@@ -22,4 +22,9 @@
         </div>
         <button class="btn btn-primary" type="submit">Sell</button>
     </form>
+    {% if errorMessage %}
+        <div class="errorMessage">
+            {{ errorMessage }}
+        </div>
+    {% endif %}
 {% endblock %}

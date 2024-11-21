@@ -9,7 +9,6 @@ import os
 from django.shortcuts import render, redirect
 from functools import wraps
 
-
 def lookup(symbol):
     """Look up quote for symbol."""
 
@@ -47,3 +46,51 @@ def lookup(symbol):
 def usd(value):
     """Format value as USD."""
     return f"${value:,.2f}"
+
+def validatePassword(password):
+    """Validate the password based on specific rules."""
+    
+    # Check if the password length is less than 8 characters
+    if len(password) < 8:
+        return "Password must be at least 8 characters long."
+    
+    # Initialize flags to track if the password has required character types
+    has_digit = False
+    has_upper = False
+    has_lower = False
+    has_symbol = False
+
+    # Loop through each character in the password to check for the required conditions
+    for char in password:
+        if char.isdigit():  # Checks if the character is a number (0-9)
+            has_digit = True
+        elif char.isupper():  # Checks if the character is an uppercase letter (A-Z)
+            has_upper = True
+        elif char.islower():  # Checks if the character is a lowercase letter (a-z)
+            has_lower = True
+        elif not char.isalnum():  # Checks for non-alphanumeric characters (symbols like @, $, etc.)
+            has_symbol = True
+
+        # If all conditions are met, exit the loop early for efficiency
+        if has_digit and has_upper and has_lower and has_symbol:
+            break
+
+    # Return specific error messages if any required condition is not met
+    if not has_digit:
+        return "Password must contain at least one number."
+    if not has_upper:
+        return "Password must contain at least one uppercase letter."
+    if not has_lower:
+        return "Password must contain at least one lowercase letter."
+    if not has_symbol:
+        return "Password must contain at least one symbol."
+
+    # If all conditions are met, return None indicating the password is valid
+    return None
+
+
+def showErrorMessage(request, html, errorMessage):
+    
+    # This function takes in the request object, the HTML template to render, 
+    # and an error message to display to the user.
+    return render(request, html, {'errorMessage': errorMessage})

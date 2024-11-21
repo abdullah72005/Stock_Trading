@@ -5,7 +5,7 @@
   </a>
 <h1 align="center">Stock_Trading</h1>
   <p align="center">
-    Stock_Trading is a web-based application designed to provide a realistic stock trading simulation experience. Users can register, manage their virtual portfolio, and fetch real-time stock prices using the Alpha Vantage API. The application emphasizes security, with features like password constraints, account balance management, and the ability to update passwords.
+    Stock_Trading is a Django web-based application designed to provide a realistic stock trading simulation experience. Users can register, manage their virtual portfolio, and fetch real-time stock prices using the Alpha Vantage API. The application emphasizes security, with features like password constraints, account balance management, and the ability to update passwords.
     <br />
     <a href="https://github.com/abdullah72005/Stock_Trading"><strong>Explore the docs »</strong></a>
   </p>

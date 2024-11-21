@@ -6,7 +6,7 @@
 
 {% block main %}
     <div class="money">Balance: {{ balance }}</div>
-    <form action="/sell" method="post">
+    <form action="/sell/" method="post">{% csrf_token %}
         <div class="mb-3">
             <select class="form-select mx-auto w-auto" name="symbol">
                 <option disabled selected>Symbol</option>
@@ -23,4 +23,3 @@
         <button class="btn btn-primary" type="submit">Sell</button>
     </form>
 {% endblock %}
-

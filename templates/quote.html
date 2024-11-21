@@ -3,10 +3,12 @@
 {% block title %}
     Quote
 {% endblock %}
-<!--this is basically the same -->
+
 {% block main %}
     <form action="/quote/" method="post">{% csrf_token %}
-        {{form.as_div}}
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="symbol" placeholder="Symbol" type="text">
+        </div>
         <button class="btn btn-primary" type="submit">Search</button>
     </form>
 {% endblock %}

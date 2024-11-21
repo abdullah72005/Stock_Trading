@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from finance.views import index_view, login_view, logout_view, register_view, buy_view, history_view, quote_view, sell_view, balance_view
+from finance.views import index_view, login_view, logout_view, register_view, buy_view, history_view, quote_view, sell_view, balance_view,password_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,4 +29,5 @@ urlpatterns = [
     path('quote/', quote_view),
     path('sell/', sell_view),
     path('balance/', balance_view),
+    path('password/', password_view)
 ]

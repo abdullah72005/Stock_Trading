@@ -14,8 +14,12 @@ class Owned(models.Model):
     symbol      = models.CharField(max_length=5, blank=False, null=False)
     shares      = models.IntegerField(blank=False, null=False)
     stock_price = models.DecimalField(blank=False, null=False, decimal_places=2, max_digits=20)
-    total       = models.DecimalField(blank=False, null=False, max_digits=20, decimal_places=2)
+    total       = models.DecimalField(blank=False, null=False, max_digits=20, decimal_places=2,)
     Username    = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="owned_stocks")
+
+    def save(self, *args, **kwargs):
+        self.total = self.shares * self.stock_price
+        super().save(*args, **kwargs)
 
     def __str__(self):
          return f"{self.Username} owns {self.shares} shares of {self.symbol}"

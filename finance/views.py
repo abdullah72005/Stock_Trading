@@ -220,7 +220,7 @@ def logout_view(request):
 def quote_view(request):
     if request.method == "POST":
         #takes the form after it's been filled
-        stock_name = request.POST.get('symbol')
+        stock_name = request.POST.get('symbol').upper()
         #calls the api and returns the price and name if found
         result = lookup(stock_name)
         #if not found send the user a letter

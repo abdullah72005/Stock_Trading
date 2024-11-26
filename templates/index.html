@@ -5,8 +5,8 @@ Homepage
 {% endblock %}
 
 {% block main %}
-<div class="money">Balance: {{ balance }}</div>
-<div class="money">Grand total: {{ grandTotal }}</div>
+<div class="money"><span class="balance-label">Balance:</span> {{ balance }}</div>
+<div class="money"><span class="balance-label">Grand total: </span>{{ grandTotal }}</div>
 <br>
 <table class="table">
     <thead>
@@ -23,8 +23,8 @@ Homepage
         <tr>
             <td>{{ stock.symbol }}</td>
             <td>{{ stock.shares }}</td>
-            <td>{{ stock.stock_price }}</td>
-            <td>{{ stock.total }}</td>
+            <td><span class="money">{{stock.stock_price }}</span></td>
+            <td><span class="money">{{ stock.total }}</span></td>
         </tr>
 
         {% endfor %}

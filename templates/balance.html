@@ -5,7 +5,12 @@
 {% endblock %}
 
 {% block main %}
-    <div class="money">Balance: {{ balance }}</div>
+<div id="balance-page">
+    <div class="money">
+        <span style="color: white;">Balance:</span> 
+        <span class="money">{{ balance }}
+    </div>
+    
     <form action="/balance" method="post">
         <h5 class="title">Enter cash amount</h5>
         <div class="mb-3">
@@ -17,4 +22,5 @@
         </div>
         <button class="btn btn-primary" type="submit">Submit</button>
     </form>
+</div>    
 {% endblock %}

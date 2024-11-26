@@ -1,14 +1,8 @@
-{% extends "layout.html" %}
-
-{% block title %}
-    Quote
-{% endblock %}
-
 {% block main %}
-<main class="container py-5 text-center">
+<main>
 
     <p>
-        A share of {{symbol }} costs {{ price }}.
+        A share of {{symbol }} costs <span class="Money">{{ price }}</span>
     </p>
 
         </main>

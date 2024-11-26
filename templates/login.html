@@ -5,13 +5,52 @@
 {% endblock %}
 
 {% block main %}
-    <form action="/login" method="post">
-        <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="username" placeholder="Username" type="text">
-        </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" autocomplete="off" name="password" placeholder="Password" type="password">
-        </div>
-        <button class="btn btn-primary" type="submit">Log In</button>
-    </form>
+    <div class="wrapper">
+        <form action="/login" method="post">
+            <div class="mb-3" id="index-box">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="username" placeholder="Username" type="text" required>
+            </div>
+            <div class="mb-3" id="index-box">
+                <input class="form-control mx-auto w-auto" id="pass" autocomplete="off" name="password" placeholder="Password" type="password" required>
+                <button type="button" id="show-pass">
+                    <img src="../static/eye-open.svg">
+                    <i class='bx bxs-lock-alt'></i>
+                </button>
+            </div>
+            <div class="remember-forget">
+                <label>
+                     <!-- <input type="checkbox">Remember Me  -->
+                </label>
+                <a href="/password">Forget password</a>
+            </div>
+            <button class="btn btn-primary" id="sub" type="submit">Log In</button>
+            <div class="register"> <p>Don't have an account? <a href="/register">Register</a></p></div>
+        </form>
+    </div>
+    <script src="../static/login.js"></script>
+    <!-- <div class="wrapper">
+        <form action="index.html" method="post">
+            <h1>login</h1> 
+            <div class="input-box">
+                <input type="text" placeholder="Username" required><i class='bx bxs-user'></i>
+            </div>
+            <div class="input-box">
+                <input type="password" id="pass" placeholder="Password" required>
+                
+                <button type="button" id="show-pass">
+                    <img src="images/eye open.svg">
+                </button>
+                <i class='bx bxs-lock-alt'></i>
+            </div>
+            <script src="login.js"></script>
+            <div class="remember-forget">
+                <label>
+                    <input type="checkbox">Remember Me
+                </label>
+                <a href="forget">Forget password</a>
+            </div>
+            <button type="submit" class="sub">login</button>
+            <div class="register"> <p>Don't have an account? <a href="register.html">Register</a></p></div>
+        </form>
+    </div> -->
 {% endblock %}

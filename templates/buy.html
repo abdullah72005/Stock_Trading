@@ -5,14 +5,18 @@
 {% endblock %}
 
 {% block main %}
-    <div class="money">Balance: {{ balance }}</div>
-    <form action="/buy" method="post">
-        <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="symbol" placeholder="Symbol" type="text">
+<div class="money">Balance: {{ balance }}</div>
+<div class="wrapper2">    
+    <form action="/buy" class="form" method="post">
+        <div class="mb-3 field_holder">
+            <input autocomplete="off" id="Symbol"  class="form-control mx-auto w-auto input" name="symbol" placeholder="" type="text">
+            <label class="label" for="Symbol">Symbol</label>
         </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" autocomplete="off" name="shares" placeholder="Shares" type="number" min="1">
+        <div class="mb-3 field_holder">
+            <input class="form-control mx-auto w-auto input" autocomplete="off" id="Shares" name="shares" placeholder="" type="number" min="1">
+            <label class="label" for="Shares">Shares</label>
         </div>
         <button class="btn btn-primary" type="submit">Buy</button>
     </form>
+</div>
 {% endblock %}

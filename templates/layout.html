@@ -13,18 +13,16 @@
 
         <!-- https://favicon.io/emoji-favicons/money-bag/ -->
         <link href="/static/favicon.ico" rel="icon">
-
-        <link href="/static/styles.css" rel="stylesheet">
-
-        <title>C$50 Finance: {% block title %}{% endblock %}</title>
+        <link href="/static/yuy.css" rel="stylesheet">
+        <link href="/static/abdo.css" rel="stylesheet">
+        <title>$TOCK$: {% block title %}{% endblock %}</title>
 
     </head>
 
-    <body>
-
+    <body class="Body">
         <nav class="bg-light border navbar navbar-expand-md navbar-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/"><span class="blue">C</span><span class="red">$</span><span class="yellow">5</span><span class="green">0</span> <span class="red">Finance</span></a>
+            <div class="container-fluid abdo" >
+                <a class="navbar-brand" href="/"><span class="blue">$</span><span class="red">T</span><span class="yellow">O</span><span class="green">C</span><span class="red">K$</span></a>
                 <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -40,11 +38,6 @@
                         <ul class="navbar-nav ms-auto mt-2">
                             <li class="nav-item"><a class="nav-link" href="/password">Change Password</a></li>
                             <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
-                        </ul>
-                    {% else %}
-                        <ul class="navbar-nav ms-auto mt-2">
-                            <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
                         </ul>
                     {% endif %}
                 </div>
@@ -65,9 +58,9 @@
 
         <footer class="mb-5">
 
-            <p class="mb-3 small text-center text-muted">
+            <!-- <p class="mb-3 small text-center text-muted">
                 Data provided by <a href="https://finance.yahoo.com/">Yahoo</a>
-            </p>
+            </p> -->
 
             <form action="https://validator.w3.org/check" class="text-center" enctype="multipart/form-data" method="post" target="_blank">
                 <input name="doctype" type="hidden" value="HTML5">

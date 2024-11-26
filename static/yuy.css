@@ -238,3 +238,9 @@ nav .navbar-brand .green
     background-color: #000000;
     border: none;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

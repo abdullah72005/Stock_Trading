@@ -12,25 +12,28 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
         <!-- https://favicon.io/emoji-favicons/money-bag/ -->
-        <link href="/static/favicon.ico" rel="icon">
+        <link href="../static/favicon.ico" rel="icon">
 
-        <link href="/static/styles.css" rel="stylesheet">
+        
+        {% block style %}{% endblock %}
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'CSS/yuy.css' %}">
 
-        <title>C$50 Finance: {% block title %}{% endblock %}</title>
+        <title>$TOCK$: {% block title %}{% endblock %}</title>
+
+
 
     </head>
 
-    <body>
-
+    <body class="Body">
         <nav class="bg-light border navbar navbar-expand-md navbar-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/"><span class="blue">C</span><span class="red">$</span><span class="yellow">5</span><span class="green">0</span> <span class="red">Finance</span></a>
+            <div class="container-fluid abdo" >
+                <a class="navbar-brand" href="/"><span class="blue">$</span><span class="red">T</span><span class="yellow">O</span><span class="green">C</span><span class="red">K$</span></a>
                 <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbar"> 
-                    <!--user auth is diff in django so i removed it until fix-->
-                    
+                <div class="collapse navbar-collapse" id="navbar">
+                    {% if user.is_authenticated %}
                         <ul class="navbar-nav me-auto mt-2">
                             <li class="nav-item"><a class="nav-link" href="/quote">Quote</a></li>
                             <li class="nav-item"><a class="nav-link" href="/buy">Buy</a></li>
@@ -41,23 +44,16 @@
                         <ul class="navbar-nav ms-auto mt-2">
                             <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
                         </ul>
-                    
-                        <ul class="navbar-nav ms-auto mt-2">
-                            <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
-                        </ul>
-                    
+                    {% endif %}
                 </div>
             </div>
         </nav>
-        <!--removed the flashing message here-->
 
             <header>
                 <div class="alert alert-primary mb-0 text-center" role="alert">
-                    
+
                 </div>
             </header>
-        
 
         <main class="container py-5 text-center">
             {% block main %}{% endblock %}
@@ -65,15 +61,8 @@
 
         <footer class="mb-5">
 
-            <p class="mb-3 small text-center text-muted">
-                Data provided by <a href="https://finance.yahoo.com/">Yahoo</a>
-            </p>
+           
 
-            <form action="https://validator.w3.org/check" class="text-center" enctype="multipart/form-data" method="post" target="_blank">
-                <input name="doctype" type="hidden" value="HTML5">
-                <input name="fragment" type="hidden">
-                <input alt="Validate" src="/static/I_heart_validator.png" type="image"> <!-- https://validator.w3.org/ -->
-            </form>
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     // Adapted from https://stackoverflow.com/a/10162353
@@ -87,7 +76,8 @@
                 });
             </script>
         </footer>
-
+    {% load static %}
+        <script src="{% static 'JS/quote.js' %}"></script>
     </body>
 
 </html>

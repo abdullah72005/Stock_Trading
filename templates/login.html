@@ -4,19 +4,25 @@
     Log In
 {% endblock %}
 
+
 {% block main %}
-    <form action="/login/" method="post"> {% csrf_token %}
-        <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="username" placeholder="Username" type="text">
-        </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" autocomplete="off" name="password" placeholder="Password" type="password">
-        </div>
-        <button class="btn btn-primary" type="submit">Log In</button>
-    </form>
+    <div class="wrapper">
+        <form action="/login/" method="post"> {% csrf_token %}
+            <div class="mb-3" id="index-box">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="username" placeholder="Username" type="text" required>
+            </div>
+            <div class="mb-3" id="index-box">
+                <input class="form-control mx-auto w-auto" id="pass" autocomplete="off" name="password" placeholder="Password" type="password" required>
+            </div>
+            <button class="btn btn-primary" id="sub" type="submit">Log In</button>
+            <div class="register"> <p>Don't have an account? <a href="/register">Register</a></p></div>
+        </form>
+    </div>
+    
+
     {% if errorMessage %}
-        <div class="errorMessage">
-            {{ errorMessage }}
-        </div>
-    {% endif %}
+    <div class="errorMessage">
+        {{ errorMessage }}
+    </div>
+{% endif %}
 {% endblock %}

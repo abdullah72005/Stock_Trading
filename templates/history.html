@@ -4,6 +4,12 @@
 History
 {% endblock %}
 
+{% block style %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'CSS/index.css' %}">
+{% endblock %}
+
+
 {% block main %}
 <br>
 <table class="table">
@@ -20,10 +26,16 @@ History
         {% for trans in transactions %}
 
         <tr>
-            <td>{{ trans.purchase_type }}</td>
-            <td>{{ trans.symbol }}</td>
+            <td>
+                {% if trans.purchase_type == 'Buy' %}
+                  <span style="color: green;">{{ trans.purchase_type }}</span>
+                {% else %}
+                  <span style="color: red;">{{ trans.purchase_type }} </span>
+                {% endif %}
+              </td>
+            <td>{{ trans.symbol }} </td>
             <td>{{ trans.shares }}</td>
-            <td>{{ trans.price_when_bought }}</td>
+            <td><span style="color: green;">{{ trans.price_when_bought }}</span></td>
             <td>{{ trans.time }}</td>
         </tr>
 

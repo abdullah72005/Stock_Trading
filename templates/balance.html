@@ -4,8 +4,20 @@
     Balance
 {% endblock %}
 
+{% block style %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'CSS/balance.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'CSS/quote.css' %}">
+{% endblock %}
+
+
 {% block main %}
-    <div class="money">Balance: {{ balance }}</div>
+<div id="balance-page">
+    <div class="money">
+        <span style="color: white;">Balance:</span> 
+        <span class="money">{{ balance }} </span>
+    </div>
+    
     <form action="/balance/" method="post"> {% csrf_token %}
         <h5 class="title">Enter cash amount</h5>
         <div class="mb-3">
@@ -13,9 +25,10 @@
         </div>
         <button class="btn btn-primary" type="submit">Submit</button>
     </form>
-    {% if errorMessage %}
-        <div class="errorMessage">
-            {{ errorMessage }}
-        </div>
-    {% endif %}
+</div>    
+{% if errorMessage %}
+<div class="errorMessage">
+    {{ errorMessage }}
+</div>
+{% endif %}
 {% endblock %}

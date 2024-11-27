@@ -4,9 +4,15 @@
 Homepage
 {% endblock %}
 
+{% block style %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'CSS/index.css' %}">
+{% endblock %}
+
+
 {% block main %}
-<div class="money">Balance: {{ balance }}</div>
-<div class="money">Grand total: {{ grandTotal }}</div>
+<div class="money"><span class="balance-label">Balance:</span> {{ balance }}</div>
+<div class="money"><span class="balance-label">Grand total: </span>{{ grandTotal }}</div>
 <br>
 <table class="table">
     <thead>
@@ -23,8 +29,9 @@ Homepage
         <tr>
             <td>{{ stock.symbol }}</td>
             <td>{{ stock.shares }}</td>
-            <td>${{ stock.stock_price |floatformat:2}}</td>
-            <td>${{ stock.total |floatformat:2}}</td>
+            <td><span class="money">${{ stock.stock_price |floatformat:2}}</span></td>
+            <td><span class="money">${{ stock.total |floatformat:2}}</span></td>
+            
         </tr>
 
         {% endfor %}

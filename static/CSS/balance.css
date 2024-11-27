@@ -1,0 +1,36 @@
+.title {
+    font-size: 1.25rem;
+    color: #ff01c8;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+#balance-page button.btn-primary {
+    background-color: #ff01c8;
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    font-size: 1rem;
+    height: auto;
+    width: auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    max-width: 400px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+#balance-page button.btn-primary:hover {
+    background-color: #ff41d6;
+    transform: scale(1.05);
+    box-shadow: 0 0 30px #ff41d6;
+    transition: box-shadow 0.7s ease;
+    transition: transform 0.2s ease-in-out;
+}
+
+#balance-page button.btn-primary:focus {
+    outline: none;
+    box-shadow: none;
+}

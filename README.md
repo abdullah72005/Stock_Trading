@@ -18,7 +18,7 @@
 
 * [![Python][Python-logo]][Python-url]
 * [![Django][Django-logo]][Django-url]
-* [![SQLite][SQLite-logo]][SQLite-url]
+* [![MySQL][MySQL-logo]][MySQL-url]
 * [![HTML][HTML-logo]][HTML-url]
 * [![CSS][CSS-logo]][CSS-url]
 * [![JavaScript][JavaScript-logo]][JavaScript-url]
@@ -58,8 +58,15 @@
 
 ### Prerequisites
 
-Before you begin, make sure you have Python3 installed. Then,
+Before you begin, make sure you have Python3 and MySQL installed. Then,
 <br>
+
+* Create a database called `stocks` in your MySQL shell:
+   ```sql
+   CREATE DATABASE stocks;
+   ```
+
+* Ensure your MySQL username and password are both set to `root`.
 
 * Install project dependencies:
   ```sh
@@ -80,6 +87,7 @@ Before you begin, make sure you have Python3 installed. Then,
    ```
 2. Apply database migrations
    ```sh
+   python3 manage.py makemigrations
    python3 manage.py migrate
    ```
 3. To start the application, execute:
@@ -114,3 +122,5 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 [JavaScript-url]: https://developer.mozilla.org/en-US/docs/Web/JavaScript
 [HTML-logo]: https://img.shields.io/badge/HTML-E34F26?style=for-the-badge&logo=html5&logoColor=white
 [HTML-url]: https://developer.mozilla.org/en-US/docs/Web/HTML
+[MySQL-logo]: https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white  
+[MySQL-url]: https://www.mysql.com/  

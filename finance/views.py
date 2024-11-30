@@ -4,7 +4,6 @@ from django.http import HttpResponse
 from django.contrib.auth.hashers import make_password, check_password 
 from django.contrib.auth import authenticate, login
 from django.core.exceptions import ObjectDoesNotExist
-from django.template.backends.jinja2 import Jinja2
 from django.template import engines
 
 from .models import Client, Owned, Transaction

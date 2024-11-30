@@ -18,7 +18,7 @@ def index_view(request):
     username = Client.objects.get(username=request.user.username)
     
     # Retrieve the amount of cash the user has (stored in the 'cash' field)
-    cash = request.user.cash
+    cash = username.get_cash()
     
     # Retrieve all stocks that the user owns by using the related 'owned_stocks' field from the Client model
     stocks = username.owned_stocks.all()
@@ -67,7 +67,7 @@ def buy_view(request):
     c = Client.objects.get(id = userid)
 
     # get users balance
-    balance = c.cash
+    balance = c.get_cash()
 
     # if method is POST
     if request.method == "POST":
@@ -102,7 +102,7 @@ def buy_view(request):
         trans.save()
 
         # update users balance
-        c.cash = float(balance) - purchasePrice
+        c.set_cash(float(balance) - purchasePrice) 
         c.save()
 
         # update users wallet
@@ -292,7 +292,7 @@ def sell_view(request):
     #gets current user from id
     user = Client.objects.get(id = userid)
     #gets the user's cash amount
-    balance = user.cash
+    balance = user.get_cash()
     #gets all the stocks the user have
     stocks = Owned.objects.filter(Username = user.id)
     if request.method == "POST":
@@ -316,9 +316,9 @@ def sell_view(request):
         #uses the lookup function to return the current price of the symbol
         lookupResult = lookup(symbol)
         #calculate the user's new cash
-        new_cash = float(user.cash) + ((lookupResult["price"]) * float(shares))
+        new_cash = float(user.get_cash()) + ((lookupResult["price"]) * float(shares))
         #puts and saves it to the use
-        user.cash = new_cash
+        user.set_cash(new_cash)
         user.save()
         #decresaes the amount of shares the user own
         stock.shares -= int(shares)
@@ -335,7 +335,7 @@ def sell_view(request):
         #sends the stocks and the balance into the form at sell.html
         context = {
             'stocks' : stocks,
-            'balance' : balance,
+            'balance' : usd(balance),
         }
         return render(request, "sell.html", context)
 
@@ -351,7 +351,7 @@ def balance_view(request):
     c = Client.objects.get(id = userid)
 
     # get users balance
-    userBalance = c.cash
+    userBalance = c.get_cash()
 
 
     # if method is post
@@ -372,7 +372,7 @@ def balance_view(request):
             return showErrorMessage(request, "balance.html", "it is forbidden to be that rich")
         
         # update users cash amount
-        c.cash = userBalance
+        c.set_cash(userBalance)
         c.save()
 
         # redirect to index
@@ -396,7 +396,6 @@ def password_view(request):
         #gets the 4 inputs
         username = request.POST.get('username')
         old_password = request.POST.get('old_password')
-        print(old_password)
         new_password = request.POST.get('new_password')
         confirm_password = request.POST.get('confirm')
         #checks for the existing of the inputs

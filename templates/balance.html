@@ -7,28 +7,28 @@
 {% block style %}
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'CSS/balance.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'CSS/quote.css' %}">
 {% endblock %}
 
 
 {% block main %}
-<div id="balance-page">
     <div class="money">
         <span style="color: white;">Balance:</span> 
         <span class="money">{{ balance }} </span>
     </div>
-    
-    <form action="/balance/" method="post"> {% csrf_token %}
-        <h5 class="title">Enter cash amount</h5>
-        <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="cash" placeholder="Amount in usd" type="number" min="1">
-        </div>
-        <button class="btn btn-primary" type="submit">Submit</button>
-    </form>
+    <div id="balance-page" class="wrapper2">
+        <form action="/balance/" class="form" method="post"> {% csrf_token %}
+            <div class="mb-3 field_holder">
+                <input autocomplete="off" id="cash" class="form-control mx-auto w-auto input" name="cash" placeholder="" type="number" min="1" required>
+                <label class="label" for="cash">Enter Cash</label>
+            </div>
+            <button class="btn btn-primary" type="submit">Submit</button>
+            {% if errorMessage %}
+            <div class="errorMessage">
+                <br>
+                {{ errorMessage }}
+            </div>
+            {% endif %}
+        </form>
+    </div>
 </div>    
-{% if errorMessage %}
-<div class="errorMessage">
-    {{ errorMessage }}
-</div>
-{% endif %}
 {% endblock %}

@@ -1,5 +1,10 @@
 {% extends "layout.html" %}
 
+{% block style %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'CSS/yuy.css' %}">
+{% endblock %}
+
 {% block title %}
     Log In
 {% endblock %}
@@ -9,7 +14,7 @@
     <div class="wrapper">
         <form action="/login/" method="post"> {% csrf_token %}
             <div class="mb-3" id="index-box">
-                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="username" placeholder="Username" type="text" required>
+                <input autocomplete="off" class="form-control mx-auto w-auto" name="username" placeholder="Username" type="text" required>
             </div>
             <div class="mb-3" id="index-box">
                 <input class="form-control mx-auto w-auto" id="pass" autocomplete="off" name="password" placeholder="Password" type="password" required>

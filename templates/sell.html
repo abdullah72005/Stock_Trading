@@ -1,11 +1,22 @@
 {% extends "layout.html" %}
 
+
+{% block style %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'CSS/yuy.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'CSS/balance.css' %}">
+{% endblock %}
+
+
 {% block title %}
     Sell
 {% endblock %}
 
 {% block main %}
-    <div class="money">Balance: {{ balance }}</div>
+<div class="money">
+    <span style="color: white;">Balance:</span> 
+    <span class="money">{{ balance }} </span>
+</div>
     <div class="wrapper2">
         <form action="/sell/" class="form" method="post">{% csrf_token %}
             <div class="mb-3 field_holder">
@@ -19,7 +30,7 @@
                 </select>
             </div>
             <div class="mb-3 field_holder">
-                <input class="form-control mx-auto w-auto input" id="share" autocomplete="off" name="shares" placeholder="" type="number" min="1">
+                <input class="form-control mx-auto w-auto input" id="share" autocomplete="off" name="shares" placeholder="" type="number" min="1" required>
                 <label class="label" for="share">Shares</label>
             </div>
             <button class="btn btn-primary" type="submit">Sell</button>

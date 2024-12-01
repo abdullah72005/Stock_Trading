@@ -4,12 +4,6 @@
 Homepage
 {% endblock %}
 
-{% block style %}
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'CSS/index.css' %}">
-{% endblock %}
-
-
 {% block main %}
 <div class="money"><span class="balance-label">Balance:</span> {{ balance }}</div>
 <div class="money"><span class="balance-label">Grand total: </span>{{ grandTotal }}</div>

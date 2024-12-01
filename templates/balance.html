@@ -11,10 +11,7 @@
 
 
 {% block main %}
-    <div class="money">
-        <span style="color: white;">Balance:</span> 
-        <span class="money">{{ balance }} </span>
-    </div>
+<div class="money"><span class="balance-label">Balance:</span> {{ balance }}</div>
     <div id="balance-page" class="wrapper2">
         <form action="/balance/" class="form" method="post"> {% csrf_token %}
             <div class="mb-3 field_holder">

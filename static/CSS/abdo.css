@@ -19,6 +19,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    
 }
 body {
     justify-content: center;
@@ -46,12 +47,12 @@ nav .navbar-brand
     border-color: rgb(13, 15, 42) !important;
 }
 .abdo{
-    position: absolute;
+    position: absolute !important;
     top: 0px;
     left: 0px;
-    background-color:rgb(13, 15, 42);
+    background-color:rgb(13, 15, 42) !important;
     height: 70px;
-}
+} 
 
 /* Colors for brand */
 nav .navbar-brand .blue
@@ -70,7 +71,7 @@ nav .navbar-brand .green
 {
     color: #5cbcf3;
 }
-  
+
 .money {
     text-align: left;
     color: rgb(17, 92, 17);
@@ -78,7 +79,9 @@ nav .navbar-brand .green
     font-family: Serif;
     margin-top: 15px;
     display: flex;
-
+}
+.money span{
+     padding-right:10px; 
 }
 input, button, #quote-form , button:focus, button:active {
     background: none;

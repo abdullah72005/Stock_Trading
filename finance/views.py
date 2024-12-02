@@ -315,7 +315,7 @@ def sell_view(request):
     #sends the stocks and the balance into the form at sell.html
     context = {
         'stocks'  : stocks,
-        'balance' : balance,
+        'balance' : usd(balance),
     }
 
     if request.method == "POST":
@@ -373,7 +373,7 @@ def balance_view(request):
 
     #gets the context for the balance.html to render Correctly
     context = {
-        'balance': userBalance,
+        'balance': usd(userBalance)
     }
 
     # if method is post

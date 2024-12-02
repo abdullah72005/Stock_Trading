@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login
 from django.core.exceptions import ObjectDoesNotExist
 from django.template import engines
 
-from .models import Client, Owned, Transaction
+from .models import Client, Owned, Transaction, Portfolio
 from finance.helpers import lookup, usd, validatePassword, showErrorMessage
 
 # Create your views here.
@@ -43,14 +43,22 @@ def index_view(request):
         # Add the stock's total value to the total portfolio value (stockSum)
         stockSum += total
 
-    # Calculate the grand total value of the user's portfolio (stocks + cash)
-    grandTotal = stockSum + float(cash)
+    # if user has no portofolio make one
+    try:
+        portfolio = Portfolio.objects.get(Username=username)
+    except:
+        portfolio = Portfolio(Username=username)
+        portfolio.save()
+
+    # Calculate the grand total value of the user's portfolio (stocks + cash) and add it to db
+    portfolio.set_net_worth(stockSum + float(cash))
+    portfolio.save()
 
     # Render the 'index.html' template, passing the user's wallet (stocks) and the calculated balances
     return render(request, "index.html", {
         'wallet': stocks,  # List of the user's owned stocks with updated prices and totals
         'balance': usd(cash),  # The user's available cash, formatted as USD
-        'grandTotal': usd(grandTotal),  # The total value of the user's portfolio, formatted as USD
+        'grandTotal': usd(portfolio.get_net_worth()),  # The total value of the user's portfolio, formatted as USD
     })
 
 
@@ -274,6 +282,10 @@ def register_view(request):
         # The password is hashed using 'make_password' to store it securely.
         client = Client(username=username, password=make_password(password))
         client.save()  # Save the new user to the database.
+
+        # initialize portofolio obj in db
+        portfolio = Portfolio(Username=client)
+        portfolio.save()
 
         # Redirect the user to the login page after successful registration.
         return redirect("/login")

@@ -53,3 +53,18 @@ class Transaction(models.Model):
     def __str__(self):
          return f"{self.purchase_type.capitalize()} {self.shares} shares of {self.symbol} by {self.Username}"
     
+
+class Portfolio(models.Model):
+    Username    = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="portfolio")
+    net_worth   = models.DecimalField(max_digits=13, decimal_places=2, default=0.00)
+
+    def get_net_worth(self):
+        return float(self.net_worth)
+
+    def set_net_worth(self, amount):
+        self.net_worth = Decimal(amount)
+        self.save()
+
+
+    def __str__(self):
+        return f"{self.Username}'s Portfolio"

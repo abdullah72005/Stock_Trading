@@ -94,3 +94,25 @@ def showErrorMessage(request, html, errorMessage):
     # This function takes in the request object, the HTML template to render, 
     # and an error message to display to the user.
     return render(request, html, {'errorMessage': errorMessage})
+
+def showErrorMessage(request, html, errorMessage):
+    
+    # This function takes in the request object, the HTML template to render, 
+    # and an error message to display to the user.
+    return render(request, html, {'errorMessage': errorMessage})
+
+def showErrorMessage(request, html, errorMessage, balance):
+    """
+    This function takes in:
+    - request: the request object
+    - html: the HTML template to render
+    - errorMessage: the error message to display
+    - balance: the user's balance to be included in the context
+    
+    It returns the rendered HTML with the provided context.
+    """
+    # Assuming usd(balance) is a custom function that formats the balance.
+    return render(request, html, {
+        'errorMessage': errorMessage,
+        'balance': usd(balance)  # Format the balance using the usd function
+    })

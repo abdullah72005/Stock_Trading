@@ -80,21 +80,21 @@ def buy_view(request):
 
         # check input
         if not symbol:
-            return showErrorMessage(request, "buy.html", "Please enter stock symbol")
+            return showErrorMessage(request, "buy.html", "Please enter stock symbol", balance)
         if not shares:
-            return showErrorMessage(request, "buy.html", "please enter shares amount")
+            return showErrorMessage(request, "buy.html", "please enter shares amount", balance)
         if not shares.isnumeric():
-            return showErrorMessage(request, "buy.html", "please enter whole number")
+            return showErrorMessage(request, "buy.html", "please enter whole number", balance)
         if float(shares) <= 0:
-            return showErrorMessage(request, "buy.html", "Invalid input")
+            return showErrorMessage(request, "buy.html", "Invalid input", balance)
         if not lookupResult:
-            return showErrorMessage(request, "buy.html", "Invalid stock symbol")
+            return showErrorMessage(request, "buy.html", "Invalid stock symbol", balance)
         
         # see cost and check if user can afford it
         purchasePrice = float(lookupResult["price"]) * float(shares)
         stockPrice = lookupResult["price"]
         if purchasePrice > balance:
-            return showErrorMessage(request, "buy.html", "You don't have enough balance")
+            return showErrorMessage(request, "buy.html", "You don't have enough balance", balance)
         
         # add purchase to db
         trans = Transaction(purchase_type=ptype, price_when_bought=stockPrice, shares=shares, symbol=symbol, Username=c)
@@ -299,19 +299,19 @@ def sell_view(request):
         symbol = request.POST.get('symbol')
         #checks if the user inputs a symbol
         if not symbol:
-            return showErrorMessage(request, "sell.html", 'select a symbol')
+            return showErrorMessage(request, "sell.html", 'select a symbol', balance)
             #checks if the user owns this symbol
         try:
             stock = get_object_or_404(stocks, symbol=symbol) 
         except: # Handle the case where the stock is not found
-            return showErrorMessage(request, "sell.html", 'select a symbol you OWN')
+            return showErrorMessage(request, "sell.html", 'select a symbol you OWN', balance)
         #gets the owned object where it's choesn by the name of the stock and the id of the user
         stock = Owned.objects.get(symbol = symbol,Username = user.id)
         #gets the shares from the form
         shares = request.POST.get('shares')
         #checks if he own enough shares
         if int(shares) > int(stock.shares):
-            return showErrorMessage(request, "sell.html", 'not enough shares')
+            return showErrorMessage(request, "sell.html", 'not enough shares', balance)
         #uses the lookup function to return the current price of the symbol
         lookupResult = lookup(symbol)
         #calculate the user's new cash
@@ -360,15 +360,15 @@ def balance_view(request):
 
         # check input
         if not cash:
-            return showErrorMessage(request, "balance.html", "please enter cash amount")
+            return showErrorMessage(request, "balance.html", "please enter cash amount", userBalance)
         if int(cash) < 0:
-            return showErrorMessage(request, "balance.html", "invalid input")
+            return showErrorMessage(request, "balance.html", "invalid input", userBalance)
 
         # check if user balance is out of bound
         userBalance = float(userBalance)
         userBalance += float(cash)
         if userBalance > 1000000000000:
-            return showErrorMessage(request, "balance.html", "it is forbidden to be that rich")
+            return showErrorMessage(request, "balance.html", "it is forbidden to be that rich", userBalance)
         
         # update users cash amount
         c.set_cash(userBalance)

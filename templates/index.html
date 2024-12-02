@@ -25,18 +25,13 @@ Homepage
     </thead>
     <tbody>
         {% for stock in wallet %}
-
         <tr>
             <td>{{ stock.symbol }}</td>
             <td>{{ stock.shares }}</td>
-            <td><span class="money">${{ stock.stock_price |floatformat:2}}</span></td>
-            <td><span class="money">${{ stock.total |floatformat:2}}</span></td>
-            
+            <td style="color: green !important;">${{ stock.stock_price |floatformat:2}}</td>
+            <td style="color: green !important;">${{ stock.total |floatformat:2}}</td>
         </tr>
-
         {% endfor %}
-
-
     </tbody>
 </table>
 {% endblock %}

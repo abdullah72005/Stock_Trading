@@ -1,5 +1,11 @@
 {% extends "layout.html" %}
 
+{% block style %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'CSS/yuy.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'CSS/balance.css' %}">
+{% endblock %}
+
 {% block title %}
     Register
 {% endblock %}
@@ -7,7 +13,7 @@
 {% block main %}
     <div class="wrapper">
         <form action="/register/" method="post"> {% csrf_token %}
-             <input class="form-control mx-auto w-auto" name="username" type="text" placeholder="Username" autocomplete="off" autofocus required>
+             <input class="form-control mx-auto w-auto" autofocus name="username" type="text" placeholder="Username" autocomplete="off" required>
             <br>
             <input class="form-control mx-auto w-auto" name="password" type="password" placeholder="Password" autocomplete="off" required>
             <br>
@@ -15,11 +21,16 @@
             <br> 
             <button class="btn btn-primary"  id="sub" type="submit">Register</button>
             <div class="register"> <p>Already have an account? <a href="/login">login</a></p></div>
+            <div>
+                <p><a href="https://github.com/abdullah72005/Stock_Trading/blob/main/README.md" target="_blank">About the website</a></p>
+            </div>
+            {% if errorMessage %}
+            <div class="errorMessage">
+                {{ errorMessage }}
+            </div>
+            {% endif %}
         </form>
+
     </div>
-    {% if errorMessage %}
-        <div class="errorMessage">
-            {{ errorMessage }}
-        </div>
-    {% endif %}
+
 {% endblock %}

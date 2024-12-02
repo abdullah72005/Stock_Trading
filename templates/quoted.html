@@ -1,14 +1,14 @@
-{% block style %}
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'CSS/quote.css' %}">
+{% extends "layout.html" %}
+{% block title %}
+    Quote
 {% endblock %}
 
 {% block main %}
-<main>
 
-    <p>
-        A share of {{symbol }} costs <span class="Money">{{ price }}</span>
+<main class="container py-5 text-center">
+    <p style="color: white; font-weight: bold; font-size: 24px; margin-top: 10rem;">
+        A share of {{ result.symbol }} costs <span style="color: green;">{{ result.price }}$</span>
     </p>
+</main>
 
-        </main>
 {% endblock %}

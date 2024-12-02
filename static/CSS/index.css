@@ -4,37 +4,11 @@
   background-size: cover;
   background-attachment: fixed;
   background-position: center;
-}
+}  
 
-input, button, #quote-form , button:focus, button:active {
-  background: none; /* Reset the background */
+th{
+  color: white !important;
 }
-
-.nav-item a {
-  color: #4b2cd2;
-  display: flex;
-}
-
-.nav-item a:hover {
-  text-decoration: underline;
-  color: #fff;
-}
-
-/* Navbar styling */
-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  background-color: #ffffff;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 10px 20px;
-}
-
-.balance-label {
-  color: white;
-}
-.money{
-  color: green;
+td{
+  color: white !important;
 }

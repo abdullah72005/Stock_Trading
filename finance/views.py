@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.template import engines
 
 from .models import Client, Owned, Transaction, Portfolio
-from finance.helpers import lookup, usd, validatePassword, showErrorMessage
+from finance.helpers import lookup, usd, validatePassword, showErrorMessage, showErrorMessageContext 
 
 # Create your views here.
 @login_required  # This decorator ensures the user must be logged in to access this view
@@ -64,6 +64,7 @@ def index_view(request):
 
 
 @login_required
+
 def buy_view(request):
     """Buy shares of stock"""
     
@@ -75,6 +76,10 @@ def buy_view(request):
 
     # get users balance
     balance = c.get_cash()
+    #gets the context for the buy.html to render Correctly
+    context = {
+        'balance' : usd(balance),
+    }
 
     # if method is POST
     if request.method == "POST":
@@ -88,21 +93,21 @@ def buy_view(request):
 
         # check input
         if not symbol:
-            return showErrorMessage(request, "buy.html", "Please enter stock symbol", balance)
+            return showErrorMessageContext(request, "buy.html", "Please enter stock symbol", context)
         if not shares:
-            return showErrorMessage(request, "buy.html", "please enter shares amount", balance)
+            return showErrorMessageContext(request, "buy.html", "please enter shares amount", context)
         if not shares.isnumeric():
-            return showErrorMessage(request, "buy.html", "please enter whole number", balance)
+            return showErrorMessageContext(request, "buy.html", "please enter whole number", context)
         if float(shares) <= 0:
-            return showErrorMessage(request, "buy.html", "Invalid input", balance)
+            return showErrorMessageContext(request, "buy.html", "Invalid input", context)
         if not lookupResult:
-            return showErrorMessage(request, "buy.html", "Invalid stock symbol", balance)
+            return showErrorMessageContext(request, "buy.html", "Invalid stock symbol", context)
         
         # see cost and check if user can afford it
         purchasePrice = float(lookupResult["price"]) * float(shares)
         stockPrice = lookupResult["price"]
         if purchasePrice > balance:
-            return showErrorMessage(request, "buy.html", "You don't have enough balance", balance)
+            return showErrorMessageContext(request, "buy.html", "You don't have enough balance", context)
         
         # add purchase to db
         trans = Transaction(purchase_type=ptype, price_when_bought=stockPrice, shares=shares, symbol=symbol, Username=c)
@@ -137,7 +142,7 @@ def buy_view(request):
         return redirect("/")
     else:
         # render buy template
-        return render(request, "buy.html", { "balance":usd(balance) })
+        return render(request, "buy.html", context)
 
 
 
@@ -306,24 +311,31 @@ def sell_view(request):
     balance = user.get_cash()
     #gets all the stocks the user have
     stocks = Owned.objects.filter(Username = user.id)
+
+    #sends the stocks and the balance into the form at sell.html
+    context = {
+        'stocks'  : stocks,
+        'balance' : balance,
+    }
+
     if request.method == "POST":
         #gets the symbol choesn from the form
         symbol = request.POST.get('symbol')
         #checks if the user inputs a symbol
         if not symbol:
-            return showErrorMessage(request, "sell.html", 'select a symbol', balance)
+            return showErrorMessageContext(request, "sell.html", 'select a symbol', context)
             #checks if the user owns this symbol
         try:
             stock = get_object_or_404(stocks, symbol=symbol) 
         except: # Handle the case where the stock is not found
-            return showErrorMessage(request, "sell.html", 'select a symbol you OWN', balance)
+            return showErrorMessageContext(request, "sell.html", 'select a symbol you OWN', context)
         #gets the owned object where it's choesn by the name of the stock and the id of the user
         stock = Owned.objects.get(symbol = symbol,Username = user.id)
         #gets the shares from the form
         shares = request.POST.get('shares')
         #checks if he own enough shares
         if int(shares) > int(stock.shares):
-            return showErrorMessage(request, "sell.html", 'not enough shares', balance)
+            return showErrorMessageContext(request, "sell.html", 'not enough shares', context)
         #uses the lookup function to return the current price of the symbol
         lookupResult = lookup(symbol)
         #calculate the user's new cash
@@ -343,11 +355,6 @@ def sell_view(request):
         return redirect("/")
 
     else:
-        #sends the stocks and the balance into the form at sell.html
-        context = {
-            'stocks' : stocks,
-            'balance' : usd(balance),
-        }
         return render(request, "sell.html", context)
 
 
@@ -364,6 +371,10 @@ def balance_view(request):
     # get users balance
     userBalance = c.get_cash()
 
+    #gets the context for the balance.html to render Correctly
+    context = {
+        'balance': userBalance,
+    }
 
     # if method is post
     if request.method == "POST":
@@ -372,15 +383,15 @@ def balance_view(request):
 
         # check input
         if not cash:
-            return showErrorMessage(request, "balance.html", "please enter cash amount", userBalance)
+            return showErrorMessageContext(request, "balance.html", "please enter cash amount", context)
         if int(cash) < 0:
-            return showErrorMessage(request, "balance.html", "invalid input", userBalance)
+            return showErrorMessageContext(request, "balance.html", "invalid input", context)
 
         # check if user balance is out of bound
         userBalance = float(userBalance)
         userBalance += float(cash)
         if userBalance > 1000000000000:
-            return showErrorMessage(request, "balance.html", "it is forbidden to be that rich", userBalance)
+            return showErrorMessageContext(request, "balance.html", "it is forbidden to be that rich", context)
         
         # update users cash amount
         c.set_cash(userBalance)
@@ -391,7 +402,7 @@ def balance_view(request):
 
     # if method is get render html page
     else:
-        return render(request, "balance.html",{ "balance":usd(userBalance) })
+        return render(request, "balance.html", context)
 
 
 

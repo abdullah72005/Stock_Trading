@@ -95,16 +95,9 @@ def showErrorMessage(request, html, errorMessage):
     # and an error message to display to the user.
     return render(request, html, {'errorMessage': errorMessage})
 
-def showErrorMessage(request, html, errorMessage):
-    
-    # This function takes in the request object, the HTML template to render, 
-    # and an error message to display to the user.
-    return render(request, html, {'errorMessage': errorMessage})
 
-def showErrorMessage(request, html, errorMessage, balance):
+def showErrorMessageContext(request, html, errorMessage, context):
     # This function takes in the request object, the HTML template to render, 
-    # and an error message to display to the user, and the balance of the user to display it in the HTML.
-    return render(request, html, {
-        'errorMessage': errorMessage,
-        'balance': usd(balance) 
-    })
+    # and the context + an error message to display to the user.
+    context['errorMessage'] = errorMessage
+    return render(request, html, context)

@@ -7,7 +7,6 @@
     border: 2px solid rgb(17, 73, 87);
     backdrop-filter: blur(20px);
     box-shadow:  0 0 15px rgb(8, 7, 7);
-    color: #2e1717;
     border-radius: 10px;
     padding: 30px 40px ;
     position: absolute;
@@ -91,3 +90,6 @@ p a:hover{
     text-decoration: underline;
     color: #26b4df;
     } 
+.wrapper input{
+        color: black !important;
+}

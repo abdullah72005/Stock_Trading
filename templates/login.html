@@ -3,6 +3,7 @@
 {% block style %}
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'CSS/yuy.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'CSS/balance.css' %}">
 {% endblock %}
 
 {% block title %}
@@ -21,13 +22,15 @@
             </div>
             <button class="btn btn-primary" id="sub" type="submit">Log In</button>
             <div class="register"> <p>Don't have an account? <a href="/register">Register</a></p></div>
+            {% if errorMessage %}
+            <div class="errorMessage">
+                <br>
+                {{ errorMessage }}
+            </div>
+            {% endif %}
         </form>
     </div>
     
 
-    {% if errorMessage %}
-    <div class="errorMessage">
-        {{ errorMessage }}
-    </div>
-{% endif %}
+
 {% endblock %}

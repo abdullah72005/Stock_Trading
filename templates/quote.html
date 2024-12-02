@@ -15,7 +15,7 @@
         <form action="/quote/" class="form" method="post">  {% csrf_token %}
             <div id="quote-form" class="mb-3">
                 <div class="field_holder">
-                    <input required id="Symbol" autocomplete="off" class="form-control input" name="symbol" placeholder="" type="text">
+                    <input required id="Symbol" autocomplete="off" class="form-control input" name="symbol" placeholder="" type="text" maxlength="5">
                     <label class="label" for="Symbol">Symbol</label>
                 </div>
                 <button class="btn btn-primary" type="submit">

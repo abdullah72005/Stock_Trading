@@ -17,7 +17,7 @@
 <div class="wrapper2">    
     <form action="/buy/" class="form" method="post"> {% csrf_token %}
         <div class="mb-3 field_holder">
-            <input autocomplete="off" id="Symbol"  class="form-control mx-auto w-auto input" name="symbol" placeholder="" type="text" required>
+            <input autocomplete="off" id="Symbol"  class="form-control mx-auto w-auto input" name="symbol" placeholder="" type="text" required maxlength="5">
             <label class="label" for="Symbol">Symbol</label>
         </div>
         <div class="mb-3 field_holder">

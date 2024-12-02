@@ -31,13 +31,15 @@
                 <label class="label" for="share">Shares</label>
             </div>
             <button class="btn btn-primary" type="submit">Sell</button>
+            {% if errorMessage %}
+            <div class="errorMessage">
+                <br>
+                {{ errorMessage }}
+            </div>
+            {% endif %}
         </form>
     </div>   
 
-    {% if errorMessage %}
-    <div class="errorMessage">
-        {{ errorMessage }}
-    </div>
-    {% endif %}
+
 {% endblock %}
 

@@ -19,7 +19,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    
 }
 body {
     justify-content: center;
@@ -50,9 +49,11 @@ nav .navbar-brand
     position: absolute !important;
     top: 0px;
     left: 0px;
-    background-color:rgb(13, 15, 42) !important;
     height: 70px;
-} 
+}  
+.bg-light {
+    --bs-bg-opacity: 0;
+}
 
 /* Colors for brand */
 nav .navbar-brand .blue
@@ -148,18 +149,20 @@ input.form-control:focus {
     color: #ffffff;
     align-items: center;
     transition: .3s ease-in-out;
-    padding-left: 5PX;
+
 }
 .field_holder .input, .label{
     font-size: 1em;
     width: 100%;
     height: 55px;
+    padding-left: 12PX;
 }
 .field_holder input:not(:placeholder-shown) + .label,
 .input:focus + .label
   {
     font-size: .75em;
     top: -20px;
+    left: -7px;
     pointer-events: none;
     color: #b3b0b0;
 
